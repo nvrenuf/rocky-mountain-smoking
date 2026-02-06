@@ -1,0 +1,80 @@
+---
+const links = [
+  { href: '/', label: 'Home', testId: 'nav-home' },
+  { href: '/recipes', label: 'Recipes', testId: 'nav-recipes' },
+  { href: '/techniques', label: 'Techniques', testId: 'nav-techniques' },
+  { href: '/about', label: 'About', testId: 'nav-about' },
+];
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) => {
+  if (href === '/') return currentPath === '/';
+  return currentPath === href || currentPath.startsWith(`${href}/`);
+};
+---
+<nav class="bg-white/90 text-[var(--color-text)] shadow-sm border-b border-neutral-200/70 backdrop-blur" data-testid="navbar">
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
+    <a href="/" aria-label="Rocky Mountain Smoking home" class="flex items-center gap-3 text-[var(--color-text)]" data-testid="nav-logo">
+      <span class="text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight uppercase" style="font-family: var(--font-serif);">
+        Rocky Mountain
+        <span class="block text-sm font-semibold tracking-[0.35em] text-[var(--color-muted)]">Smoking</span>
+      </span>
+    </a>
+    <div class="hidden items-center gap-2 md:flex">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class={`relative rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 ${
+            isActive(link.href)
+              ? 'border border-neutral-900/40 bg-neutral-900/5 text-neutral-950'
+              : 'text-neutral-700 hover:border hover:border-neutral-200 hover:bg-neutral-50 hover:text-neutral-900'
+          }`}
+          data-testid={link.testId}
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
+    <button
+      type="button"
+      class="inline-flex items-center justify-center rounded-full p-2 text-neutral-700 transition hover:bg-neutral-100 hover:text-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 md:hidden"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-menu-toggle
+      data-testid="mobile-menu-toggle"
+    >
+      <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+  <div id="mobile-menu" class="hidden border-t border-neutral-200/70 bg-white md:hidden" data-testid="mobile-menu">
+    <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class={`rounded-xl px-4 py-3 text-xs font-semibold uppercase tracking-[0.28em] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 ${
+            isActive(link.href)
+              ? 'bg-neutral-100 text-neutral-950 ring-1 ring-neutral-300'
+              : 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900'
+          }`}
+          data-testid={`${link.testId}-mobile`}
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>
+<script is:inline>
+  const toggle = document.querySelector('[data-menu-toggle]');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  if (toggle && mobileMenu) {
+    toggle.addEventListener('click', () => {
+      const isHidden = mobileMenu.classList.toggle('hidden');
+      toggle.setAttribute('aria-expanded', (!isHidden).toString());
+    });
+  }
+</script>

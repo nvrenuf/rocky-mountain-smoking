@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+show_help() {
+  cat <<'EOT'
+Rocky Mountain Smoking workspace – VS Code CLI shim
+
+This container cannot download or run the official Visual Studio Code
+`code` binary, so this shim explains how to work with the project using
+supported alternatives.
+
+Usage: code [workspace]
+
+Options:
+  -h, --help   Show this help message.
+
+Behavior:
+  • If a workspace path is provided it is resolved to an absolute path.
+  • The script prints guidance on how to open that workspace in VS Code
+    using the browser-based client or VS Code's Remote Tunnels feature.
+EOT
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  show_help
+  exit 0
+fi
+
+workspace="${1:-.}"
+if ! workspace_path=$(realpath -m "$workspace" 2>/dev/null); then
+  printf '\nCannot resolve workspace path: %s\n' "$workspace" >&2
+  exit 1
+fi
+
+cat <<EOT
+The official VS Code 'code' CLI cannot be installed in this sandboxed
+container, but you can still work on:
+  $workspace_path
+
+Recommended options:
+
+1. VS Code for the Web
+   • Open https://vscode.dev in your browser.
+   • Use “Open Remote Repository” and point it at the repository you pushed
+     from this container (e.g. GitHub).
+
+2. VS Code Remote Tunnels
+   • On your local machine run 'code tunnel' to start a tunnel.
+   • Connect to the tunnel from VS Code Desktop and open the workspace path
+     shown above.
+
+3. Local checkout
+   • Clone the repository to your local machine where the 'code' CLI is
+     available, then run 'code $workspace'.
+
+Tip: add the repository's bin/ directory to your PATH to silence the
+original “command not found” error:
+
+  export PATH="$(pwd)/bin:$PATH"
+
+Run 'code --help' for this message again.
+EOT

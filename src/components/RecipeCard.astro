@@ -1,0 +1,46 @@
+---
+import type { RecipeEntry } from '../content/config';
+import { BBQ_CATEGORIES } from '../data/bbqCategories';
+import { formatDate } from '../utils/format';
+
+const { recipe } = Astro.props as { recipe: RecipeEntry };
+
+const category = BBQ_CATEGORIES.find((item) => item.key === recipe.data.category);
+const dateLabel = formatDate(recipe.data.date);
+const heroSrc = recipe.data.heroImage?.trim() || '/images/placeholder-hero.svg';
+const heroAlt = recipe.data.heroImageAlt ?? recipe.data.title;
+const tempLabel = `${recipe.data.pitTempF}°F pit · ${recipe.data.targetTempF}°F target`;
+---
+
+<a
+  href={`/recipes/${recipe.slug}/`}
+  class="group flex h-full flex-col overflow-hidden rounded-3xl border border-neutral-200/70 bg-white/90 shadow-[0_18px_40px_-32px_rgba(0,0,0,0.6)] backdrop-blur transition hover:-translate-y-1 hover:border-neutral-300 hover:shadow-[0_26px_60px_-36px_rgba(0,0,0,0.65)] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60"
+>
+  <div class="relative aspect-[16/10] overflow-hidden bg-neutral-100">
+    <img
+      src={heroSrc}
+      alt={heroAlt}
+      loading="lazy"
+      decoding="async"
+      width="640"
+      height="420"
+      class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+    />
+  </div>
+  <div class="flex flex-1 flex-col gap-4 p-5">
+    <div class="flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-neutral-500">
+      <span>{category?.label ?? 'BBQ Recipe'}</span>
+      <span aria-hidden class="h-1 w-1 rounded-full bg-neutral-300" />
+      <span>{dateLabel}</span>
+    </div>
+    <h3 class="text-xl font-semibold leading-tight text-neutral-900 transition group-hover:text-neutral-700 line-clamp-2">
+      {recipe.data.title}
+    </h3>
+    <p class="text-sm leading-relaxed text-neutral-600 line-clamp-3">{recipe.data.description}</p>
+    <div class="mt-auto flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-neutral-500">
+      <span>{recipe.data.method}</span>
+      <span aria-hidden class="h-1 w-1 rounded-full bg-neutral-300" />
+      <span>{tempLabel}</span>
+    </div>
+  </div>
+</a>

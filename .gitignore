@@ -1,0 +1,35 @@
+# Ignore bulk-issues script
+bulk-issues.sh
+node_modules
+dist
+.astro
+
+# Local
+.vercel/
+test-results/
+
+# Local data
+data-store.json
+.DS_Store
+
+# Security scan outputs (generated)
+NPM_AUDIT.txt
+SEMGREP.txt
+SEMGREP.sarif
+TRIVY*.txt
+security/*.txt
+
+# Security pipeline outputs
+security/*.txt
+
+# Security pipeline outputs
+security/*.txt
+
+.astro/settings.json
+
+SECURITY_MASTER_REPORT.md
+SECURITY_*.md
+
+# Codex repo-local skills (use global ~/.agents instead)
+.agents/
+

@@ -1,0 +1,54 @@
+---
+import Layout from '../layouts/BaseLayout.astro';
+---
+
+<Layout title="About · Rocky Mountain Smoking" description="Altitude-first BBQ recipes, technique notes, and a clear editorial stance.">
+  <main class="bg-[var(--color-page)] py-14 text-[var(--color-text)] sm:py-16">
+    <div class="mx-auto max-w-screen-xl space-y-10 px-4 sm:px-6 lg:px-8">
+      <header class="space-y-3">
+        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--color-muted)]">About</p>
+        <h1 class="text-3xl font-semibold text-[var(--color-text)] sm:text-4xl">Rocky Mountain Smoking</h1>
+        <p class="max-w-3xl text-lg text-[var(--color-muted)] sm:text-xl">
+          Rocky Mountain Smoking is a BBQ field guide for cooks above 5,000 feet. We test, measure, and document the adjustments
+          that keep bark tight, smoke clean, and timing predictable in dry, thin air.
+        </p>
+      </header>
+
+      <section class="grid gap-6 lg:grid-cols-3">
+        <div class="rounded-2xl border border-neutral-200/70 bg-white/90 p-6 shadow-[0_18px_40px_-35px_rgba(0,0,0,0.6)]">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--color-muted)]">What we are</p>
+          <h2 class="text-xl font-semibold text-[var(--color-text)]">An altitude-first BBQ lab</h2>
+          <p class="mt-3 text-[var(--color-muted)]">
+            We publish recipes and technique drills with explicit temperatures, timings, and rest windows. Every post includes
+            altitude notes so you can adjust without guesswork.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-neutral-200/70 bg-white/90 p-6 shadow-[0_18px_40px_-35px_rgba(0,0,0,0.6)]">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--color-muted)]">Who it’s for</p>
+          <h2 class="text-xl font-semibold text-[var(--color-text)]">Pitmasters in thin air</h2>
+          <p class="mt-3 text-[var(--color-muted)]">
+            Home cooks, caterers, and competition teams running rigs in Colorado, Utah, Wyoming, Montana, and the high desert west.
+          </p>
+        </div>
+        <div class="rounded-2xl border border-neutral-200/70 bg-white/90 p-6 shadow-[0_18px_40px_-35px_rgba(0,0,0,0.6)]">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--color-muted)]">Editorial stance</p>
+          <h2 class="text-xl font-semibold text-[var(--color-text)]">Measured, not mythical</h2>
+          <p class="mt-3 text-[var(--color-muted)]">
+            We avoid folklore and focus on repeatability: airflow, moisture loss, and fire management backed by real cook logs.
+          </p>
+        </div>
+      </section>
+
+      <section class="rounded-3xl border border-neutral-200/70 bg-white/90 p-6 shadow-[0_18px_45px_-35px_rgba(0,0,0,0.65)] sm:p-8">
+        <div class="space-y-3">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--color-muted)]">Our promise</p>
+          <h2 class="text-2xl font-semibold text-[var(--color-text)] sm:text-3xl">No hype, just better cooks</h2>
+          <p class="max-w-4xl text-[var(--color-muted)]">
+            We keep the signal high and the fluff low: clear methods, explicit temps, and recipes you can repeat. Subscribe if you
+            want new cooks and technique drills sent to your inbox.
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>

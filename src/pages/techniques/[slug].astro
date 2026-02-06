@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import TechniqueLayout from '../../layouts/TechniqueLayout.astro';
+import { readingTime } from '../../utils/readingTime';
+
+export async function getStaticPaths() {
+  const techniques = (await getCollection('techniques')).filter((technique) => !technique.data.draft);
+  return techniques.map((technique) => ({
+    params: { slug: technique.slug },
+    props: { technique },
+  }));
+}
+
+const { technique } = Astro.props;
+const { Content, headings } = await technique.render();
+const { minutes } = readingTime(technique.body ?? '');
+const shareUrl = technique.data.canonicalUrl || new URL(`/techniques/${technique.slug}/`, Astro.site ?? 'https://rockymountainsmoking.com').toString();
+---
+<TechniqueLayout technique={technique} headings={headings} readingTime={minutes} shareUrl={shareUrl}>
+  <Content />
+</TechniqueLayout>

@@ -1,0 +1,44 @@
+/* Global styles for Rocky Mountain Smoking */
+@import './wrapkit-theme.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: radial-gradient(circle at top, #fbf7f1 0%, #f4ede3 45%, #efe5d7 100%);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  letter-spacing: 0.01em;
+}
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: var(--accent);
+}
+
+main {
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255, 245, 235, 0.65), transparent 55%),
+    radial-gradient(circle at 80% 10%, rgba(255, 233, 210, 0.55), transparent 45%);
+}
+
+.grain-overlay {
+  position: relative;
+}
+.grain-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='80' height='80' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
+  opacity: 0.6;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}

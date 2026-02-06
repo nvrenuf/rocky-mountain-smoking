@@ -1,0 +1,75 @@
+---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+const { src, alt = '' } = Astro.props as {
+  src: ImageMetadata | string;
+  alt?: string;
+};
+
+const sizes = '(min-width: 1024px) 760px, 100vw';
+
+let resolvedSrc: string = typeof src === 'string' ? src : src.src;
+let useGeneratedImage = typeof src !== 'string';
+let isSvg = false;
+
+if (typeof src !== 'string') {
+  isSvg = src.format === 'svg';
+  if (isSvg) {
+    resolvedSrc = src.src;
+    useGeneratedImage = false;
+  }
+} else {
+  const trimmed = src.trim();
+  resolvedSrc = trimmed;
+  isSvg = trimmed.toLowerCase().endsWith('.svg');
+  useGeneratedImage = false;
+}
+
+const generatedImage = useGeneratedImage
+  ? await getImage({
+      src: src as ImageMetadata,
+      widths: [400, 760, 1200],
+      formats: ['jpg'],
+      quality: 78,
+    })
+  : undefined;
+
+const fallbackSrcset = [400, 760, 1200]
+  .map((width) => `${resolvedSrc} ${width}w`)
+  .join(', ');
+---
+<div class="mx-auto mb-6 w-full max-w-[760px]">
+  <div class="relative aspect-[1200/630] overflow-hidden rounded-xl bg-neutral-900/50">
+    {generatedImage ? (
+      <picture class="absolute inset-0 block h-full w-full">
+        {Object.values(generatedImage.sources).map((source) => (
+          <source type={source.type} srcset={source.srcset} sizes={sizes} />
+        ))}
+        <img
+          src={generatedImage.src}
+          alt={alt}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          width={generatedImage.width}
+          height={generatedImage.height}
+          class="absolute inset-0 h-full w-full object-cover"
+        />
+      </picture>
+    ) : (
+      <img
+        src={resolvedSrc}
+        alt={alt}
+        srcset={fallbackSrcset}
+        sizes={sizes}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        width="1200"
+        height="630"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+    )}
+  </div>
+</div>

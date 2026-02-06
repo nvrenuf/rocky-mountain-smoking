@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background-color: var(--color-page);
+    color: var(--color-text);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: inherit;
+    color: inherit;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at top, rgba(251, 247, 241, 0.9) 0%, rgba(244, 237, 227, 0.85) 45%, rgba(239, 229, 215, 0.85) 100%);
+  }
+
+  ::selection {
+    background-color: rgba(244, 244, 245, 0.15);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    text-decoration-color: transparent;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  }
+
+  a:hover,
+  a:focus-visible {
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+  }
+}
+
+.prose {
+  @apply mx-auto max-w-3xl leading-7 sm:leading-8 prose-headings:tracking-tight prose-headings:font-semibold prose-headings:mt-8 prose-headings:mb-4;
+  @apply prose-neutral;
+  @apply prose-h1:text-4xl prose-h1:sm:text-5xl prose-h1:font-extrabold;
+  @apply prose-h2:text-3xl prose-h2:sm:text-4xl prose-h2:font-bold;
+  @apply prose-h3:text-2xl prose-h3:sm:text-3xl prose-h3:font-semibold;
+  @apply prose-p:text-base prose-p:sm:text-lg;
+  @apply prose-a:no-underline hover:prose-a:underline prose-a:underline-offset-2;
+  @apply prose-img:rounded-2xl prose-img:border prose-img:border-neutral-200;
+  @apply prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:bg-neutral-100 prose-code:text-neutral-900;
+  @apply prose-pre:rounded-2xl prose-pre:p-5 prose-pre:bg-neutral-50 prose-pre:text-neutral-900 prose-pre:border prose-pre:border-neutral-200;
+  @apply prose-hr:border-neutral-200;
+  @apply prose-blockquote:border-l-4 prose-blockquote:border-neutral-200 prose-blockquote:text-neutral-600 prose-blockquote:pl-5;
+}
+
+.prose table {
+  @apply w-full overflow-x-auto rounded-2xl border border-neutral-200 text-sm dark:border-neutral-800;
+}
+
+.prose thead th {
+  @apply border-b border-neutral-200 px-4 py-3 text-left text-neutral-600 dark:border-neutral-800 dark:text-neutral-300;
+}
+
+.prose tbody td {
+  @apply border-b border-neutral-100 px-4 py-3 align-top text-neutral-700 dark:border-neutral-900/60 dark:text-neutral-400;
+}
+
+.prose tbody tr:nth-child(odd) td {
+  @apply bg-neutral-50 dark:bg-neutral-900/40;
+}

@@ -1,0 +1,87 @@
+---
+import Layout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import RecipeCard from '../../components/RecipeCard.astro';
+import { BBQ_CATEGORIES } from '../../data/bbqCategories';
+
+const allRecipes = (await getCollection('recipes')).filter((recipe) => !recipe.data.draft);
+const recipes = [...allRecipes].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const featured = recipes.find((recipe) => recipe.data.featured) ?? recipes[0];
+const latest = recipes.filter((recipe) => recipe.slug !== featured?.slug).slice(0, 9);
+---
+
+<Layout title="Recipes · Rocky Mountain Smoking" description="Signature Rocky Mountain BBQ recipes tuned for altitude, bark, and clean smoke.">
+  <main class="bg-[var(--color-page)] py-16 text-[var(--color-text)] sm:py-20">
+    <div class="mx-auto max-w-screen-xl space-y-14 px-4 sm:px-6 lg:px-8">
+      <section class="space-y-4">
+        <p class="text-xs font-semibold uppercase tracking-[0.35em] text-[var(--color-muted)]">Recipes</p>
+        <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">Altitude-tested BBQ you can trust.</h1>
+        <p class="max-w-3xl text-lg text-[var(--color-muted)]">
+          Rocky Mountain Smoking recipes are tuned for dry air, shifting winds, and long cooks.
+          Every recipe lists pit temps, targets, and altitude adjustments so your next smoke stays on track.
+        </p>
+      </section>
+
+      {featured && (
+        <section class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <RecipeCard recipe={featured} />
+          <div class="rounded-3xl border border-neutral-200/70 bg-white/90 p-6 shadow-[0_18px_45px_-35px_rgba(0,0,0,0.65)]">
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">Featured cut</p>
+            <h2 class="mt-3 text-2xl font-semibold">{featured.data.cut}</h2>
+            <p class="mt-3 text-sm text-neutral-700">Method: {featured.data.method}</p>
+            <p class="mt-2 text-sm text-neutral-700">Pit temp: {featured.data.pitTempF}°F</p>
+            <p class="mt-2 text-sm text-neutral-700">Target: {featured.data.targetTempF}°F</p>
+            <p class="mt-4 text-sm text-neutral-700">{featured.data.altitudeNotes}</p>
+            <a
+              href={`/recipes/${featured.slug}/`}
+              class="mt-6 inline-flex items-center justify-center rounded-full bg-[var(--color-ink)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-neutral-900"
+            >
+              Cook this
+            </a>
+          </div>
+        </section>
+      )}
+
+      <section class="space-y-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">Latest recipes</p>
+            <h2 class="text-2xl font-semibold">Fresh off the pit</h2>
+          </div>
+          <a
+            href="/recipes/"
+            class="inline-flex items-center justify-center rounded-full border border-neutral-300 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-neutral-800 transition hover:border-neutral-500 hover:text-neutral-900"
+          >
+            All recipes
+          </a>
+        </div>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {latest.map((recipe) => (
+            <RecipeCard recipe={recipe} />
+          ))}
+        </div>
+      </section>
+
+      <section class="space-y-6">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">Categories</p>
+          <h2 class="text-2xl font-semibold">Beef, pork, chicken</h2>
+        </div>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {BBQ_CATEGORIES.map((category) => (
+            <a
+              href={`/recipes/category/${category.key}/`}
+              class="group flex flex-col gap-3 rounded-3xl border border-neutral-200/70 bg-white/90 p-5 shadow-[0_18px_40px_-35px_rgba(0,0,0,0.6)] transition hover:-translate-y-1 hover:border-neutral-300"
+            >
+              <div class="flex items-center gap-3">
+                <span class="h-2 w-2 rounded-full" style={`background:${category.color}`} aria-hidden="true" />
+                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-[var(--color-muted)]">{category.label}</p>
+              </div>
+              <p class="text-sm text-neutral-700">{category.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
+  </main>
+</Layout>

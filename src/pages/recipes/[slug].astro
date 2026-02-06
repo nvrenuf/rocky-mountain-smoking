@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import RecipeLayout from '../../layouts/RecipeLayout.astro';
+import { readingTime } from '../../utils/readingTime';
+
+export async function getStaticPaths() {
+  const recipes = (await getCollection('recipes')).filter((recipe) => !recipe.data.draft);
+  return recipes.map((recipe) => ({
+    params: { slug: recipe.slug },
+    props: { recipe },
+  }));
+}
+
+const { recipe } = Astro.props;
+const { Content, headings } = await recipe.render();
+const { minutes } = readingTime(recipe.body ?? '');
+const shareUrl = recipe.data.canonicalUrl || new URL(`/recipes/${recipe.slug}/`, Astro.site ?? 'https://rockymountainsmoking.com').toString();
+---
+<RecipeLayout recipe={recipe} headings={headings} readingTime={minutes} shareUrl={shareUrl}>
+  <Content />
+</RecipeLayout>

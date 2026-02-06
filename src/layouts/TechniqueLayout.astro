@@ -1,0 +1,160 @@
+---
+import Navbar from '../components/Navbar.astro';
+import HeroImage from '../components/HeroImage.astro';
+import SubscribeInline from '../components/SubscribeInline';
+import Footer from '../components/Footer.astro';
+import '../styles/tokens.css';
+import '../styles/tailwind.css';
+import type { TechniqueEntry } from '../content/config';
+import type { MarkdownHeading } from 'astro';
+import { formatDate, formatReadingMinutes } from '../utils/format';
+import { BBQ_CATEGORIES } from '../data/bbqCategories';
+import { getBuildFingerprint } from '../utils/buildFingerprint';
+
+const {
+  technique,
+  headings,
+  readingTime,
+  shareUrl,
+} = Astro.props as {
+  technique: TechniqueEntry;
+  headings: MarkdownHeading[];
+  readingTime: number;
+  shareUrl: string;
+};
+
+const {
+  title,
+  description,
+  date,
+  author,
+  heroImage,
+  heroImageAlt,
+  category,
+  skillLevel,
+  durationMinutes,
+  keyTempsF,
+  altitudeNotes,
+  tags,
+  canonicalUrl,
+} = technique.data;
+
+const displayDate = formatDate(date);
+const readingTimeLabel = formatReadingMinutes(readingTime);
+const isoDate = date.toISOString();
+const FALLBACK_HERO = '/images/placeholder-hero.svg';
+const heroSrc = heroImage?.trim() || FALLBACK_HERO;
+const heroAlt = heroImageAlt ?? `${title} hero image`;
+const categoryLabel = category ? BBQ_CATEGORIES.find((item) => item.key === category)?.label : undefined;
+const fingerprint = getBuildFingerprint();
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  image: heroSrc.startsWith('http') ? heroSrc : new URL(heroSrc, canonicalUrl).toString(),
+  datePublished: isoDate,
+  dateModified: isoDate,
+  author: {
+    '@type': 'Person',
+    name: author,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Rocky Mountain Smoking',
+  },
+  mainEntityOfPage: canonicalUrl,
+};
+
+const filteredHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const tocHeadings = filteredHeadings.length >= 4 ? filteredHeadings : [];
+---
+<!DOCTYPE html>
+<html lang="en" class="bg-white text-neutral-900">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={heroSrc.startsWith('http') ? heroSrc : new URL(heroSrc, canonicalUrl).toString()} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:image" content={heroSrc.startsWith('http') ? heroSrc : new URL(heroSrc, canonicalUrl).toString()} />
+    <meta name="build" content={fingerprint.metaContent} />
+    <title>{title} · Rocky Mountain Smoking</title>
+    <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+  </head>
+  <body class="bg-[var(--color-page)] text-[var(--color-text)] antialiased">
+    <Navbar />
+    <div class="mx-auto max-w-[1200px] px-4 pb-16 pt-10 sm:px-6 sm:pt-12 lg:px-8">
+      <div class="lg:grid lg:grid-cols-12 lg:gap-12">
+        <main class="space-y-8 sm:space-y-10 lg:col-span-8">
+          <HeroImage src={heroSrc} alt={heroAlt} />
+          <header class="space-y-5">
+            <div class="flex flex-wrap items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">
+              {categoryLabel && <span>{categoryLabel}</span>}
+              {categoryLabel && <span aria-hidden class="hidden h-1 w-1 rounded-full bg-neutral-300 sm:block" />}
+              <span>{skillLevel}</span>
+            </div>
+            <h1 class="text-4xl font-semibold tracking-tight text-[var(--color-text)] sm:text-5xl leading-[1.05]">{title}</h1>
+            {description && <p class="text-lg text-[var(--color-muted)] sm:text-xl">{description}</p>}
+          </header>
+          <div class="rounded-3xl border border-neutral-200/70 bg-white/90 p-5 shadow-[0_18px_45px_-35px_rgba(0,0,0,0.65)]">
+            <div class="grid gap-4 text-sm text-neutral-700 sm:grid-cols-2">
+              <div>
+                <p><span class="font-semibold text-neutral-900">Published:</span> {displayDate}</p>
+                <p><span class="font-semibold text-neutral-900">Author:</span> {author}</p>
+                <p><span class="font-semibold text-neutral-900">Reading time:</span> {readingTimeLabel}</p>
+              </div>
+              <div>
+                {durationMinutes && <p><span class="font-semibold text-neutral-900">Session time:</span> {durationMinutes} min</p>}
+                {keyTempsF?.length && <p><span class="font-semibold text-neutral-900">Key temps:</span> {keyTempsF.join(' / ')}°F</p>}
+                {altitudeNotes && <p><span class="font-semibold text-neutral-900">Altitude:</span> {altitudeNotes}</p>}
+              </div>
+            </div>
+          </div>
+          <article class="prose prose-lg text-neutral-900 prose-headings:font-semibold prose-h2:mt-12 prose-h2:pt-2 prose-h3:mt-8 prose-p:text-neutral-800 prose-li:text-neutral-800 prose-strong:text-neutral-900">
+            <slot />
+          </article>
+          <section class="pt-4">
+            <SubscribeInline client:load location="technique" />
+          </section>
+        </main>
+        <aside class="space-y-6 lg:col-span-4">
+          <div class="space-y-6 lg:sticky lg:top-24">
+            <div class="rounded-3xl border border-neutral-200/70 bg-white/90 p-6 shadow-[0_18px_45px_-35px_rgba(0,0,0,0.65)]">
+              <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--color-muted)]">Technique Snapshot</p>
+              <div class="mt-4 space-y-3 text-sm text-neutral-700">
+                <p><span class="font-semibold text-neutral-900">Tags:</span> {tags.join(', ')}</p>
+                {durationMinutes && <p><span class="font-semibold text-neutral-900">Duration:</span> {durationMinutes} min</p>}
+                {keyTempsF?.length && <p><span class="font-semibold text-neutral-900">Key temps:</span> {keyTempsF.join(' / ')}°F</p>}
+                {altitudeNotes && <p><span class="font-semibold text-neutral-900">Altitude note:</span> {altitudeNotes}</p>}
+              </div>
+            </div>
+            {tocHeadings.length > 0 && (
+              <div class="rounded-3xl border border-neutral-200/70 bg-white/90 p-6 shadow-[0_18px_45px_-35px_rgba(0,0,0,0.65)]">
+                <p class="text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--color-muted)]">On this page</p>
+                <ul class="mt-4 space-y-2 text-sm text-neutral-700">
+                  {tocHeadings.map((heading) => (
+                    <li>
+                      <a class="hover:text-amber-700" href={`#${heading.slug}`}>{heading.text}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </aside>
+      </div>
+    </div>
+    <Footer fingerprint={fingerprint} />
+  </body>
+</html>

@@ -1,0 +1,210 @@
+---
+import Layout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import RecipeCard from '../components/RecipeCard.astro';
+import TechniqueCard from '../components/TechniqueCard.astro';
+import SubscribeInline from '../components/SubscribeInline';
+import { BBQ_CATEGORIES } from '../data/bbqCategories';
+
+const recipesAll = (await getCollection('recipes')).filter((recipe) => !recipe.data.draft);
+const techniquesAll = (await getCollection('techniques')).filter((technique) => !technique.data.draft);
+
+const recipes = [...recipesAll].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const techniques = [...techniquesAll].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const featuredRecipe = recipes.find((recipe) => recipe.data.featured) ?? recipes[0];
+const featuredTechnique = techniques.find((technique) => technique.data.featured) ?? techniques[0];
+
+const latestRecipes = recipes.filter((recipe) => recipe.slug !== featuredRecipe?.slug).slice(0, 3);
+const latestTechniques = techniques.filter((technique) => technique.slug !== featuredTechnique?.slug).slice(0, 3);
+---
+
+<Layout title="Rocky Mountain Smoking" description="BBQ recipes and techniques tuned for Rocky Mountain altitude, dry air, and steady smoke.">
+  <main class="bg-[var(--color-page)] py-16 text-[var(--color-text)] sm:py-20">
+    <div class="mx-auto max-w-screen-xl space-y-16 px-4 sm:px-6 lg:px-8">
+      <section class="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+        <div class="space-y-6">
+          <p class="text-xs font-semibold uppercase tracking-[0.35em] text-[var(--color-muted)]">Rocky Mountain Smoking</p>
+          <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">
+            High-altitude BBQ that keeps its bark, bite, and smoke.
+          </h1>
+          <p class="max-w-2xl text-lg text-[var(--color-muted)]">
+            Recipes and techniques built for thin air, low humidity, and long cooks.
+            Every post lists temperatures, timings, and altitude adjustments so you can cook with confidence above 5,000 feet.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a
+              href="/recipes/"
+              class="inline-flex items-center justify-center rounded-full bg-[var(--color-ink)] px-6 py-3 text-xs font-semibold uppercase tracking-[0.32em] text-white transition hover:bg-neutral-900"
+            >
+              Browse recipes
+            </a>
+            <a
+              href="/techniques/"
+              class="inline-flex items-center justify-center rounded-full border border-neutral-300 px-6 py-3 text-xs font-semibold uppercase tracking-[0.32em] text-neutral-800 transition hover:border-neutral-500 hover:text-neutral-900"
+            >
+              Learn techniques
+            </a>
+          </div>
+        </div>
+        <div class="rounded-[32px] border border-neutral-200/70 bg-gradient-to-br from-amber-100 via-orange-50 to-neutral-100 p-6 shadow-[0_24px_70px_-50px_rgba(0,0,0,0.75)]">
+          <div class="space-y-4 rounded-[24px] border border-neutral-200/60 bg-white/95 p-6">
+            <p class="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">Today’s focus</p>
+            <h2 class="text-2xl font-semibold">Altitude notes matter.</h2>
+            <p class="text-sm text-neutral-700">
+              At 5,000+ feet, airflow increases and moisture evaporates faster. Expect bark to set earlier, fat to render slower,
+              and your stall to move differently. We bake those adjustments into every recipe.
+            </p>
+            <ul class="space-y-2 text-sm text-neutral-700">
+              <li>Lower humidity = faster bark formation.</li>
+              <li>Dry heat = longer rests to retain moisture.</li>
+              <li>Wind = tighter damper control.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {featuredRecipe && (
+        <section class="space-y-6">
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">Featured recipe</p>
+              <h2 class="text-2xl font-semibold">Plan your next cook</h2>
+            </div>
+            <a
+              href="/recipes/"
+              class="inline-flex items-center justify-center rounded-full border border-neutral-300 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-neutral-800 transition hover:border-neutral-500 hover:text-neutral-900"
+            >
+              All recipes
+            </a>
+          </div>
+          <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <RecipeCard recipe={featuredRecipe} />
+            <div class="space-y-4 rounded-3xl border border-neutral-200/70 bg-white/90 p-6 shadow-[0_18px_45px_-35px_rgba(0,0,0,0.65)]">
+              <p class="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">Quick breakdown</p>
+              <p class="text-sm text-neutral-700">Cut: {featuredRecipe.data.cut}</p>
+              <p class="text-sm text-neutral-700">Method: {featuredRecipe.data.method}</p>
+              <p class="text-sm text-neutral-700">Pit temp: {featuredRecipe.data.pitTempF}°F</p>
+              <p class="text-sm text-neutral-700">Target: {featuredRecipe.data.targetTempF}°F</p>
+              <p class="text-sm text-neutral-700">Altitude: {featuredRecipe.data.altitudeNotes}</p>
+              <a
+                href={`/recipes/${featuredRecipe.slug}/`}
+                class="inline-flex items-center justify-center rounded-full bg-[var(--color-ink)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-neutral-900"
+              >
+                Cook it
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {latestRecipes.length > 0 && (
+        <section class="space-y-6">
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">Latest recipes</p>
+              <h2 class="text-2xl font-semibold">Fresh off the pit</h2>
+            </div>
+            <a
+              href="/recipes/"
+              class="inline-flex items-center justify-center rounded-full border border-neutral-300 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-neutral-800 transition hover:border-neutral-500 hover:text-neutral-900"
+            >
+              Browse recipes
+            </a>
+          </div>
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {latestRecipes.map((recipe) => (
+              <RecipeCard recipe={recipe} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {featuredTechnique && (
+        <section class="space-y-6">
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">Featured technique</p>
+              <h2 class="text-2xl font-semibold">Master the fundamentals</h2>
+            </div>
+            <a
+              href="/techniques/"
+              class="inline-flex items-center justify-center rounded-full border border-neutral-300 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-neutral-800 transition hover:border-neutral-500 hover:text-neutral-900"
+            >
+              All techniques
+            </a>
+          </div>
+          <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <TechniqueCard technique={featuredTechnique} />
+            <div class="space-y-4 rounded-3xl border border-neutral-200/70 bg-white/90 p-6 shadow-[0_18px_45px_-35px_rgba(0,0,0,0.65)]">
+              <p class="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">Focus</p>
+              <p class="text-sm text-neutral-700">Skill level: {featuredTechnique.data.skillLevel}</p>
+              {featuredTechnique.data.durationMinutes && (
+                <p class="text-sm text-neutral-700">Session time: {featuredTechnique.data.durationMinutes} min</p>
+              )}
+              {featuredTechnique.data.keyTempsF?.length && (
+                <p class="text-sm text-neutral-700">Key temps: {featuredTechnique.data.keyTempsF.join(' / ')}°F</p>
+              )}
+              {featuredTechnique.data.altitudeNotes && (
+                <p class="text-sm text-neutral-700">Altitude: {featuredTechnique.data.altitudeNotes}</p>
+              )}
+              <a
+                href={`/techniques/${featuredTechnique.slug}/`}
+                class="inline-flex items-center justify-center rounded-full bg-[var(--color-ink)] px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-neutral-900"
+              >
+                Learn it
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {latestTechniques.length > 0 && (
+        <section class="space-y-6">
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">Latest techniques</p>
+              <h2 class="text-2xl font-semibold">Lessons from the pit</h2>
+            </div>
+            <a
+              href="/techniques/"
+              class="inline-flex items-center justify-center rounded-full border border-neutral-300 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-neutral-800 transition hover:border-neutral-500 hover:text-neutral-900"
+            >
+              Browse techniques
+            </a>
+          </div>
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {latestTechniques.map((technique) => (
+              <TechniqueCard technique={technique} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section class="space-y-6">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.32em] text-[var(--color-muted)]">Categories</p>
+          <h2 class="text-2xl font-semibold">Beef, pork, chicken</h2>
+        </div>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {BBQ_CATEGORIES.map((category) => (
+            <a
+              href={`/recipes/category/${category.key}/`}
+              class="group flex flex-col gap-3 rounded-3xl border border-neutral-200/70 bg-white/90 p-5 shadow-[0_18px_40px_-35px_rgba(0,0,0,0.6)] transition hover:-translate-y-1 hover:border-neutral-300"
+            >
+              <div class="flex items-center gap-3">
+                <span class="h-2 w-2 rounded-full" style={`background:${category.color}`} aria-hidden="true" />
+                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-[var(--color-muted)]">{category.label}</p>
+              </div>
+              <p class="text-sm text-neutral-700">{category.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section class="space-y-6">
+        <SubscribeInline client:load location="home" />
+      </section>
+    </div>
+  </main>
+</Layout>

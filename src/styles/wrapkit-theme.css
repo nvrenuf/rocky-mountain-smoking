@@ -1,0 +1,12 @@
+/* Rocky Mountain Smoking theme */
+:root {
+  --primary: #c3531d;
+  --accent: #2f3a30;
+  --bg-light: #f6f1ea;
+  --card-bg: #ffffff;
+  --sidebar-bg: #efe5d7;
+  --text-main: #1e1a16;
+  --text-muted: #6b5f55;
+  --radius: 1.25rem;
+  --shadow: 0 16px 40px rgba(18, 14, 10, 0.12);
+}
