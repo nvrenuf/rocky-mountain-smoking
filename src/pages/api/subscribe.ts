@@ -8,7 +8,7 @@ import {
   hashValue,
   isValidEmail,
   normalizeEmail,
-  tokenExpiresAt,
+  shortLivedTokenExpiresAt,
 } from "../../utils/newsletter";
 import { rateLimitNewsletter } from "../../utils/rate-limit";
 
@@ -181,7 +181,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           confirmed_at: null,
           unsubscribed_at: null,
           confirm_token_hash: hashValue(confirmToken),
-          confirm_token_expires_at: tokenExpiresAt(),
+          confirm_token_expires_at: shortLivedTokenExpiresAt(),
           unsubscribe_token_hash: null,
           unsubscribe_token_expires_at: null,
           last_ip: lastIp,

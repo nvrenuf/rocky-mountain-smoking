@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
-import { createToken, getClientIp, hashValue, isValidToken, tokenExpiresAt } from "../../utils/newsletter";
+import { createToken, getClientIp, hashValue, isValidToken, shortLivedTokenExpiresAt } from "../../utils/newsletter";
 import { rateLimitNewsletter } from "../../utils/rate-limit";
 
 export const prerender = false;
@@ -105,7 +105,15 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
       return redirectTo(request, "/newsletter/confirmed", env.siteUrl);
     }
 
-    if (subscriber.status === "unsubscribed") {
+    if (subscriber.status !== "pending") {
+      await supabase
+        .from("subscribers")
+        .update({
+          confirm_token_hash: null,
+          confirm_token_expires_at: null,
+        })
+        .eq("id", subscriber.id)
+        .eq("confirm_token_hash", tokenHash);
       return redirectTo(request, "/newsletter/confirmed", env.siteUrl);
     }
 
@@ -120,7 +128,7 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
         confirm_token_hash: null,
         confirm_token_expires_at: null,
         unsubscribe_token_hash: unsubscribeTokenHash,
-        unsubscribe_token_expires_at: tokenExpiresAt(),
+        unsubscribe_token_expires_at: shortLivedTokenExpiresAt(),
       })
       .eq("id", subscriber.id)
       .eq("confirm_token_hash", tokenHash)
