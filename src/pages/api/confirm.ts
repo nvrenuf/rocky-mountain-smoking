@@ -1,7 +1,15 @@
 import type { APIRoute } from "astro";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
-import { createToken, getClientIp, hashValue, isValidToken, shortLivedTokenExpiresAt } from "../../utils/newsletter";
+import {
+  createToken,
+  getClientIp,
+  hashValue,
+  isValidEmail,
+  isValidToken,
+  normalizeEmail,
+  shortLivedTokenExpiresAt,
+} from "../../utils/newsletter";
 import { rateLimitNewsletter } from "../../utils/rate-limit";
 
 export const prerender = false;
@@ -117,6 +125,12 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
       return redirectTo(request, "/newsletter/confirmed", env.siteUrl);
     }
 
+    const normalizedEmail = normalizeEmail(subscriber.email ?? "");
+    if (!isValidEmail(normalizedEmail)) {
+      console.error("[newsletter] Invalid subscriber email on confirm");
+      return redirectTo(request, "/newsletter/confirmed", env.siteUrl);
+    }
+
     const unsubscribeToken = createToken();
     const unsubscribeTokenHash = hashValue(unsubscribeToken);
 
@@ -149,7 +163,7 @@ export const GET: APIRoute = async ({ request, clientAddress }) => {
     const resend = new Resend(env.resendApiKey);
     const sendResult = await resend.emails.send({
       from: env.resendFrom,
-      to: [subscriber.email],
+      to: [normalizedEmail],
       subject: "Welcome to Rocky Mountain Smoking",
       text:
         "Welcome to Rocky Mountain Smoking.\n\n" +
