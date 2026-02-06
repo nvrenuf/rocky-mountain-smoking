@@ -24,8 +24,12 @@
           "value": "DENY"
         },
         {
-          "key": "Content-Security-Policy-Report-Only",
-          "value": "default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+          "key": "Report-To",
+          "value": "{\"group\":\"csp\",\"max_age\":10886400,\"endpoints\":[{\"url\":\"https://csp.example.com/report\"}]}"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; report-uri https://csp.example.com/report; report-to csp"
         }
       ]
     }
