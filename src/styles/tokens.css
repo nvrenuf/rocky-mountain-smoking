@@ -1,14 +1,15 @@
 :root {
   color-scheme: light;
-  --color-page: #f6f1ea;
+  --color-page: #ede0d4;
   --color-surface: #ffffff;
-  --color-border: #e4dcd1;
-  --color-text: #1e1a16;
-  --color-muted: #6b5f55;
-  --color-subtle: #8a7e74;
-  --color-ink: #2a211c;
-  --color-ember: #c3531d;
-  --color-ember-soft: #e06f3d;
+  --color-border: #d8c8bb;
+  --color-text: #333333;
+  --color-muted: #5c5c5c;
+  --color-subtle: #7a6f66;
+  --color-ink: #5e260f;
+  --color-ember: #bb2525;
+  --color-ember-soft: #e07a5f;
+  --color-forest: #3d5a40;
   --max-page-width: 1200px;
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
