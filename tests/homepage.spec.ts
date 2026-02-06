@@ -1,45 +1,21 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('Homepage layout', () => {
-  test('shows featured spine, supporting grid, and survival areas without duplicates', async ({ page }) => {
+  test('shows hero, recipe and technique entry points, and newsletter', async ({ page }) => {
     await page.goto('/');
 
-    await expect(page.getByTestId('hero-section')).toBeVisible();
-    await expect(page.getByTestId('curated-grid-section')).toBeVisible();
-    await expect(page.getByTestId('survival-areas-section')).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('High-altitude BBQ');
+    await expect(page.getByRole('link', { name: 'Browse recipes' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Learn techniques' })).toBeVisible();
 
-    const heroSlug = await page.getByTestId('hero-section').locator('a[href^="/posts/"]').first().getAttribute('href');
-    const gridCards = page.getByTestId('curated-grid-section').locator('a[href^="/posts/"]');
+    const recipeLinks = page.locator('a[href^="/recipes/"]');
+    expect(await recipeLinks.count()).toBeGreaterThan(2);
 
-    await expect(gridCards).toHaveCount(6);
+    const techniqueLinks = page.locator('a[href^="/techniques/"]');
+    expect(await techniqueLinks.count()).toBeGreaterThan(1);
 
-    const slugs = await page.locator('[data-testid$="-section"] a[href^="/posts/"]').evaluateAll((links) =>
-      links
-        .map((link) => (link.getAttribute('href') ?? '').replace(/\/posts\/|\/$/g, ''))
-        .filter(Boolean),
-    );
-
-    const unique = new Set(slugs);
-    expect(unique.size).toBe(slugs.length);
-
-    const normalizedHero = heroSlug?.replace(/\/posts\/|\/$/g, '');
-    expect(slugs).not.toContain(normalizedHero);
-  });
-
-  test('survival areas menu highlights the five navigation hubs', async ({ page }) => {
-    await page.goto('/');
-
-    const survivalCards = page.getByTestId('survival-areas-section').locator('a[href^="/category/"]');
-    await expect(survivalCards).toHaveCount(5);
-
-    const labels = await survivalCards.evaluateAll((anchors) => anchors.map((anchor) => anchor.textContent?.trim()).filter(Boolean));
-    expect(labels.length).toBe(5);
-  });
-
-  test('hides newsletter and version switchers', async ({ page }) => {
-    await page.goto('/');
-    await expect(page.locator('input[type="email"], form[action*="newsletter"]')).toHaveCount(0);
-    expect(await page.getByText(/version/i).count()).toBe(0);
+    await expect(page.getByRole('heading', { name: 'Beef, pork, chicken' })).toBeVisible();
+    await expect(page.locator('input[type="email"]')).toBeVisible();
   });
 
   test('mobile layout stays stacked without horizontal scroll', async ({ page }) => {

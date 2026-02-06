@@ -1,37 +1,26 @@
 import { expect, test } from '@playwright/test';
 
-test('Survival Library excludes homepage posts and stays within 12 per page', async ({ page }) => {
-  await page.goto('/');
+test('recipes index lists sample recipes and categories', async ({ page }) => {
+  await page.goto('/recipes/');
 
-  const excluded = await page
-    .locator('[data-testid$="-section"] a[href^="/posts/"]')
-    .evaluateAll((links) => links.map((link) => (link.getAttribute('href') ?? '').replace(/\/posts\/|\/$/g, '')));
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Altitude-tested BBQ');
+  await expect(page.getByRole('link', { name: /High-Altitude Brisket/i })).toBeVisible();
 
-  await page.goto('/posts/');
-  await expect(page).toHaveTitle(/Survival Library/);
-
-  const articles = page.locator('[data-testid="blog-list"] article a[href^="/posts/"]');
-  const librarySlugs = await articles.evaluateAll((links) => links.map((link) => (link.getAttribute('href') ?? '').replace(/\/posts\/|\/$/g, '')));
-
-  excluded.forEach((slug) => expect(librarySlugs).not.toContain(slug));
-  expect(librarySlugs.length).toBeLessThanOrEqual(12);
-
-  const totalPagesAttr = await page.getByTestId('blog-list').getAttribute('data-total-pages');
-  const totalPages = Number(totalPagesAttr ?? '1');
-  if (totalPages > 1) {
-    await expect(page.getByTestId('pagination')).toBeVisible();
-  } else {
-    await expect(page.getByTestId('pagination')).toHaveCount(0);
-  }
+  const categoryLinks = page.locator('a[href^="/recipes/category/"]');
+  expect(await categoryLinks.count()).toBe(3);
 });
 
-test('individual post pages render without signup forms', async ({ page }) => {
-  await page.goto('/posts/');
-  const firstPostLink = page.locator('[data-testid="blog-list"] article a[href^="/posts/"]').first();
-  const href = await firstPostLink.getAttribute('href');
-  expect(href).not.toBeNull();
+test('recipe detail page shows temps and altitude notes', async ({ page }) => {
+  await page.goto('/recipes/high-altitude-brisket/');
 
-  await page.goto(href!);
-  await expect(page.locator('article')).toBeVisible();
-  await expect(page.locator('input[type="email"], form[action*="newsletter"]')).toHaveCount(0);
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('High-Altitude Brisket');
+  await expect(page.getByText(/Pit temp:/i)).toBeVisible();
+  await expect(page.getByText(/Altitude Notes/i)).toBeVisible();
 });
+
+test('techniques index lists sample techniques', async ({ page }) => {
+  await page.goto('/techniques/');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Reliable smoke');
+  await expect(page.getByRole('link', { name: /Clean Smoke Fire Management/i })).toBeVisible();
+});
+

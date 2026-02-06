@@ -1,2 +1,2 @@
 # /src/data
-Static JSON or JS files (topic categories, quiz logic).
+Static data files (BBQ categories, shared constants).
