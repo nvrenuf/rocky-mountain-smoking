@@ -1,0 +1,22 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E1A16"/>
+      <stop offset="0.55" stop-color="#3A2E24"/>
+      <stop offset="1" stop-color="#C3531D"/>
+    </linearGradient>
+    <linearGradient id="smoke" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F6F1EA" stop-opacity="0.65"/>
+      <stop offset="1" stop-color="#F6F1EA" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <path d="M0 470 C200 420 420 420 600 460 C760 495 940 520 1200 500 V630 H0 Z" fill="#2A211C"/>
+  <path d="M140 210 C220 180 300 180 380 210 C460 240 540 240 620 210 C700 180 780 180 860 210" stroke="url(#smoke)" stroke-width="22" stroke-linecap="round"/>
+  <path d="M220 260 C300 230 380 230 460 260 C540 290 620 290 700 260" stroke="url(#smoke)" stroke-width="18" stroke-linecap="round"/>
+  <rect x="210" y="330" width="780" height="160" rx="80" fill="#5B3A27"/>
+  <rect x="250" y="350" width="700" height="120" rx="60" fill="#7C4A2B"/>
+  <rect x="280" y="370" width="640" height="80" rx="40" fill="#C06A2A"/>
+  <text x="90" y="110" fill="#F6F1EA" font-family="Fraunces, Georgia, serif" font-size="44" font-weight="600">High-Altitude Brisket</text>
+  <text x="90" y="160" fill="#E6D8C7" font-family="Barlow Semi Condensed, Arial, sans-serif" font-size="20" letter-spacing="3">DEEP BARK • CLEAN SMOKE</text>
+</svg>

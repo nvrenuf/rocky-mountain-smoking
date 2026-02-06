@@ -13,8 +13,8 @@ altitudeNotes: "Thin air accelerates combustion; use smaller splits and tighter 
 tags:
   - "fire management"
   - "smoke quality"
-heroImage: "/images/placeholder-hero.svg"
-heroImageAlt: "Clean blue smoke rolling from a smoker"
+heroImage: "/images/hero-clean-smoke.svg"
+heroImageAlt: "Smoker silhouette with clean blue smoke"
 canonicalUrl: "https://rockymountainsmoking.com/techniques/clean-smoke-fire-management/"
 ---
 

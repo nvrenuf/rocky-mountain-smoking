@@ -1,0 +1,19 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E1A16"/>
+      <stop offset="0.6" stop-color="#3A2E24"/>
+      <stop offset="1" stop-color="#7C4A2B"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <path d="M0 470 C240 430 420 420 600 450 C800 490 980 520 1200 500 V630 H0 Z" fill="#2A211C"/>
+  <path d="M180 420 L340 360 L520 390 L700 310 L900 340" stroke="#E6D8C7" stroke-width="6" fill="none"/>
+  <circle cx="340" cy="360" r="8" fill="#E6D8C7"/>
+  <circle cx="520" cy="390" r="8" fill="#E6D8C7"/>
+  <circle cx="700" cy="310" r="8" fill="#E6D8C7"/>
+  <rect x="260" y="260" width="680" height="140" rx="20" fill="#5B3A27"/>
+  <rect x="320" y="290" width="560" height="80" rx="14" fill="#C06A2A"/>
+  <text x="90" y="110" fill="#F6F1EA" font-family="Fraunces, Georgia, serif" font-size="44" font-weight="600">Altitude Stall Reset</text>
+  <text x="90" y="160" fill="#E6D8C7" font-family="Barlow Semi Condensed, Arial, sans-serif" font-size="20" letter-spacing="3">WRAP EARLY • REST LONGER</text>
+</svg>

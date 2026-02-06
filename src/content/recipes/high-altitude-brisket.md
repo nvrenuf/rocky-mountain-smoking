@@ -30,8 +30,8 @@ tags:
   - "brisket"
   - "bark"
   - "long smoke"
-heroImage: "/images/placeholder-hero.svg"
-heroImageAlt: "Smoked brisket sliced with deep bark"
+heroImage: "/images/hero-brisket.svg"
+heroImageAlt: "Smoked brisket silhouette with deep bark"
 canonicalUrl: "https://rockymountainsmoking.com/recipes/high-altitude-brisket/"
 ---
 

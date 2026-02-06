@@ -28,8 +28,8 @@ tags:
   - "chicken"
   - "hot and fast"
   - "skin"
-heroImage: "/images/placeholder-hero.svg"
-heroImageAlt: "Crisp smoked chicken on a board"
+heroImage: "/images/hero-chicken.svg"
+heroImageAlt: "Crisp chicken silhouette with heat waves"
 canonicalUrl: "https://rockymountainsmoking.com/recipes/crisp-skin-half-chicken/"
 ---
 

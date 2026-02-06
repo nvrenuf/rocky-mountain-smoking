@@ -28,8 +28,8 @@ tags:
   - "pork"
   - "pulled"
   - "shoulder"
-heroImage: "/images/placeholder-hero.svg"
-heroImageAlt: "Pulled pork shoulder with bark"
+heroImage: "/images/hero-pork-shoulder.svg"
+heroImageAlt: "Pork shoulder silhouette with layered smoke"
 canonicalUrl: "https://rockymountainsmoking.com/recipes/high-country-pork-shoulder/"
 ---
 

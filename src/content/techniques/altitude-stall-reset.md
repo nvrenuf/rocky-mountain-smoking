@@ -13,8 +13,8 @@ tags:
   - "stall"
   - "wrap"
   - "timing"
-heroImage: "/images/placeholder-hero.svg"
-heroImageAlt: "Thermometer reading during a stall"
+heroImage: "/images/hero-stall-reset.svg"
+heroImageAlt: "Temperature line chart over a smoky plateau"
 canonicalUrl: "https://rockymountainsmoking.com/techniques/altitude-stall-reset/"
 ---
 

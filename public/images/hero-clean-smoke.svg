@@ -1,0 +1,18 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E1A16"/>
+      <stop offset="0.6" stop-color="#2F3A30"/>
+      <stop offset="1" stop-color="#6B7C66"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <path d="M0 470 C240 430 420 420 600 450 C800 490 980 520 1200 500 V630 H0 Z" fill="#1E1A16"/>
+  <rect x="260" y="300" width="680" height="160" rx="18" fill="#2A211C" stroke="#E6D8C7" stroke-opacity="0.4"/>
+  <rect x="300" y="330" width="250" height="90" rx="10" fill="#3A2E24"/>
+  <rect x="580" y="330" width="320" height="90" rx="10" fill="#3A2E24"/>
+  <path d="M260 230 C360 190 460 190 560 230" stroke="#F6F1EA" stroke-opacity="0.55" stroke-width="20" stroke-linecap="round"/>
+  <path d="M520 190 C620 150 720 150 820 190" stroke="#F6F1EA" stroke-opacity="0.45" stroke-width="18" stroke-linecap="round"/>
+  <text x="90" y="110" fill="#F6F1EA" font-family="Fraunces, Georgia, serif" font-size="44" font-weight="600">Clean Smoke Fire Management</text>
+  <text x="90" y="160" fill="#D7E0D1" font-family="Barlow Semi Condensed, Arial, sans-serif" font-size="20" letter-spacing="3">STEADY BURN • THIN AIR</text>
+</svg>

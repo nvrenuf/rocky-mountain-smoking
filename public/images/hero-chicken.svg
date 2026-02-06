@@ -1,0 +1,18 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E1A16"/>
+      <stop offset="0.55" stop-color="#3A2E24"/>
+      <stop offset="1" stop-color="#E6A157"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <path d="M0 470 C220 430 420 420 600 450 C800 490 980 520 1200 500 V630 H0 Z" fill="#2A211C"/>
+  <circle cx="500" cy="360" r="120" fill="#D98B54"/>
+  <circle cx="700" cy="360" r="120" fill="#D98B54"/>
+  <circle cx="600" cy="350" r="160" fill="#E6B171"/>
+  <path d="M250 250 C330 220 410 220 490 250" stroke="#F6F1EA" stroke-opacity="0.45" stroke-width="16" stroke-linecap="round"/>
+  <path d="M710 250 C790 220 870 220 950 250" stroke="#F6F1EA" stroke-opacity="0.45" stroke-width="16" stroke-linecap="round"/>
+  <text x="90" y="110" fill="#F6F1EA" font-family="Fraunces, Georgia, serif" font-size="44" font-weight="600">Crisp-Skin Half Chicken</text>
+  <text x="90" y="160" fill="#E6D8C7" font-family="Barlow Semi Condensed, Arial, sans-serif" font-size="20" letter-spacing="3">HOT & FAST • WIND-READY</text>
+</svg>

@@ -1,0 +1,18 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2A211C"/>
+      <stop offset="0.6" stop-color="#5B3A27"/>
+      <stop offset="1" stop-color="#E06F3D"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <path d="M0 460 C240 430 420 420 600 450 C800 490 980 520 1200 500 V630 H0 Z" fill="#1E1A16"/>
+  <ellipse cx="600" cy="370" rx="360" ry="110" fill="#7C4A2B"/>
+  <ellipse cx="600" cy="370" rx="300" ry="90" fill="#C06A2A"/>
+  <ellipse cx="600" cy="370" rx="240" ry="70" fill="#D98B54"/>
+  <path d="M220 230 C320 200 420 200 520 230" stroke="#F6F1EA" stroke-opacity="0.4" stroke-width="18" stroke-linecap="round"/>
+  <path d="M520 230 C620 200 720 200 820 230" stroke="#F6F1EA" stroke-opacity="0.4" stroke-width="18" stroke-linecap="round"/>
+  <text x="90" y="110" fill="#F6F1EA" font-family="Fraunces, Georgia, serif" font-size="44" font-weight="600">High-Country Pork Shoulder</text>
+  <text x="90" y="160" fill="#E6D8C7" font-family="Barlow Semi Condensed, Arial, sans-serif" font-size="20" letter-spacing="3">MOISTURE-FIRST • LONG REST</text>
+</svg>
