@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { trackEvent } from '../utils/analytics';
 
 type Status = 'idle' | 'loading' | 'success' | 'error' | 'disabled';
@@ -10,6 +10,15 @@ type SubscribeInlineProps = {
   location?: string;
 };
 
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: HTMLElement, options: { sitekey: string; callback: (token: string) => void }) => string;
+      reset: (widgetId?: string) => void;
+    };
+  }
+}
+
 export default function SubscribeInline({
   heading = 'Smoke notes in your inbox',
   helperText = 'Weekly recipes, technique drills, and altitude tweaks. No fluff, just better cooks.',
@@ -20,7 +29,13 @@ export default function SubscribeInline({
   const [message, setMessage] = useState<string>('');
   const [enabled, setEnabled] = useState<boolean>(false);
   const [mode, setMode] = useState<'provider' | 'log-only' | 'disabled'>('disabled');
+  const [turnstileToken, setTurnstileToken] = useState<string>('');
+  const [turnstileReady, setTurnstileReady] = useState<boolean>(false);
+  const turnstileRef = useRef<HTMLDivElement | null>(null);
+  const widgetIdRef = useRef<string | null>(null);
   const enableApi = import.meta.env.PUBLIC_ENABLE_SUBSCRIBE_API === 'true';
+  const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+  const enableTurnstile = Boolean(turnstileSiteKey);
 
   const statusMessage = useMemo(() => {
     if (status === 'success') return message || 'Check your inbox to confirm.';
@@ -28,6 +43,42 @@ export default function SubscribeInline({
     if (status === 'disabled') return message || "Newsletter signup isn't enabled yet.";
     return '';
   }, [status, message]);
+
+  useEffect(() => {
+    if (!enableTurnstile) return;
+    if (!turnstileRef.current) return;
+
+    const scriptId = 'turnstile-script';
+    const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null;
+    const renderWidget = () => {
+      if (!turnstileRef.current || !window.turnstile) return;
+      if (widgetIdRef.current) return;
+      widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+        sitekey: turnstileSiteKey,
+        callback: (token: string) => {
+          setTurnstileToken(token);
+          setTurnstileReady(true);
+        },
+      });
+    };
+
+    if (existingScript) {
+      if (window.turnstile) {
+        renderWidget();
+      } else {
+        existingScript.addEventListener('load', renderWidget, { once: true });
+      }
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+    script.async = true;
+    script.defer = true;
+    script.addEventListener('load', renderWidget, { once: true });
+    document.head.appendChild(script);
+  }, [enableTurnstile, turnstileSiteKey]);
 
   useEffect(() => {
     if (!enableApi) {
@@ -106,7 +157,12 @@ export default function SubscribeInline({
       const response = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source_page: location, company: honeypot }),
+        body: JSON.stringify({
+          email,
+          source_page: location,
+          company: honeypot,
+          turnstile_token: turnstileToken,
+        }),
       });
       const data = (await response.json().catch(() => ({}))) as { ok?: boolean; message?: string; mode?: string };
 
@@ -117,11 +173,25 @@ export default function SubscribeInline({
       setStatus('success');
       setMessage(data?.message ?? 'You are subscribed. Welcome aboard.');
       form.reset();
+      if (enableTurnstile) {
+        setTurnstileToken('');
+        setTurnstileReady(false);
+        if (widgetIdRef.current && window.turnstile) {
+          window.turnstile.reset(widgetIdRef.current);
+        }
+      }
       trackEvent('newsletter_success', { location, mode: data?.mode ?? mode });
     } catch (error) {
       const fallbackMessage = error instanceof Error ? error.message : 'Unable to subscribe right now.';
       setStatus('error');
       setMessage(fallbackMessage);
+      if (enableTurnstile) {
+        setTurnstileToken('');
+        setTurnstileReady(false);
+        if (widgetIdRef.current && window.turnstile) {
+          window.turnstile.reset(widgetIdRef.current);
+        }
+      }
       trackEvent('newsletter_error', { location, message: fallbackMessage, mode });
     }
   };
@@ -139,6 +209,12 @@ export default function SubscribeInline({
 
       <form className="mt-6 space-y-4" onSubmit={onSubmit}>
         <input type="text" name="company" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
+        {enableTurnstile && (
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-neutral-800">Verification</label>
+            <div ref={turnstileRef} className="cf-turnstile" />
+          </div>
+        )}
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="flex-1 space-y-2">
             <label htmlFor={`email-${location}`} className="text-sm font-semibold text-neutral-800">
@@ -152,7 +228,7 @@ export default function SubscribeInline({
               className="w-full rounded-xl border border-neutral-300 bg-white px-4 py-3 text-base text-neutral-900 shadow-sm transition focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-300/40"
               placeholder="you@example.com"
               autoComplete="email"
-              disabled={status === 'loading' || status === 'disabled'}
+              disabled={status === 'loading' || status === 'disabled' || (enableTurnstile && !turnstileReady)}
               aria-describedby={`subscribe-helper-${location}`}
             />
           </div>
@@ -160,7 +236,7 @@ export default function SubscribeInline({
             <button
               type="submit"
               className="inline-flex w-full items-center justify-center rounded-full bg-[var(--color-ink)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-neutral-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60 disabled:cursor-not-allowed disabled:opacity-70"
-              disabled={status === 'loading' || status === 'disabled'}
+              disabled={status === 'loading' || status === 'disabled' || (enableTurnstile && !turnstileReady)}
             >
               {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
             </button>

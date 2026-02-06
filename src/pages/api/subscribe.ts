@@ -23,6 +23,7 @@ const json = (status: number, body: Record<string, unknown>) =>
 const getEnv = () => {
   const enabled = (import.meta.env.PUBLIC_ENABLE_SUBSCRIBE_API ?? "").toLowerCase() === "true";
   const siteUrl = import.meta.env.SITE_URL as string | undefined;
+  const turnstileSecret = import.meta.env.TURNSTILE_SECRET_KEY as string | undefined;
 
   const supabaseUrl = import.meta.env.SUPABASE_URL as string | undefined;
   const supabaseServiceRoleKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY as string | undefined;
@@ -41,6 +42,7 @@ const getEnv = () => {
     supabaseKey: supabaseServiceRoleKey || supabaseAnonKey,
     resendApiKey,
     resendFrom,
+    turnstileSecret,
     hasCredentials: hasSupabase && hasResend && Boolean(siteUrl),
   };
 };
@@ -84,6 +86,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     source_page?: string;
     honeypot?: string;
     company?: string;
+    turnstile_token?: string;
   };
 
   if (payload.honeypot || payload.company) {
@@ -94,6 +97,15 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const normalizedEmail = normalizeEmail(rawEmail);
   if (!isValidEmail(normalizedEmail)) {
     return json(400, { ok: false, message: "Add a valid email to subscribe.", error: "bad_request" });
+  }
+
+  if (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY && !env.turnstileSecret) {
+    console.error("[newsletter] Turnstile is enabled client-side but TURNSTILE_SECRET_KEY is missing");
+    return json(500, {
+      ok: false,
+      message: "Signup temporarily unavailable. Please try again later.",
+      error: "missing_turnstile_secret",
+    });
   }
 
   if (!env.enabled) {
@@ -142,6 +154,28 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   const rawSource = payload.source_page ?? payload.source ?? "";
   const sourceValue = typeof rawSource === "string" ? rawSource.slice(0, 200) : "";
+  const turnstileToken = typeof payload.turnstile_token === "string" ? payload.turnstile_token.trim() : "";
+
+  if (env.turnstileSecret) {
+    if (!turnstileToken) {
+      return json(400, { ok: false, message: "Please complete the verification.", error: "missing_turnstile" });
+    }
+
+    const verifyResponse = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: env.turnstileSecret,
+        response: turnstileToken,
+        remoteip: isIP(clientIp) ? clientIp : "",
+      }),
+    });
+
+    const verifyPayload = (await verifyResponse.json().catch(() => ({}))) as { success?: boolean };
+    if (!verifyPayload.success) {
+      return json(400, { ok: false, message: "Verification failed. Try again.", error: "turnstile_failed" });
+    }
+  }
 
   try {
     const supabase = createClient(env.supabaseUrl, env.supabaseKey, {
