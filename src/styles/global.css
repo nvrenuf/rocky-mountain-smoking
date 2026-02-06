@@ -30,6 +30,7 @@ main {
     radial-gradient(circle at 80% 10%, rgba(224, 122, 95, 0.2), transparent 45%);
 }
 
+
 .grain-overlay {
   position: relative;
 }
